@@ -1,37 +1,42 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import UpdateModal from "../updateModal/UpdateModal";
+import UpdateModal from '../updateModal/UpdateModal';
 
-import "./event.scss";
+import './event.scss';
 
 const Event = ({ setEvents, events, event }) => {
-    const [isUpdateModalShow, setIsUpdateModalShow] = useState(false);
+	const [isUpdateModalShow, setIsUpdateModalShow] = useState(false);
 
-    const handleUpdateModal = () => {
-        setIsUpdateModalShow(!isUpdateModalShow);
-    };
+	const handleUpdateModal = () => {
+		setIsUpdateModalShow(!isUpdateModalShow);
+	};
 
-    return (
-        <div className='day__events_event' key={event.id}>
-            <div onClick={() => handleUpdateModal()}>{event.title}</div>
-            {isUpdateModalShow ? (
-                <UpdateModal
-                    handleUpdateModal={handleUpdateModal}
-                    setEvents={setEvents}
-                    events={events}
-                    event={{
-                        id: event.id,
-                        title: event.title,
-                        description: event.description,
-                        date: event.date,
-                        time: event.time,
-                        createEventDate: event.createEventDate,
-                        updateEventDate: event.updateEventDate || "",
-                    }}
-                />
-            ) : null}
-        </div>
-    );
+	return (
+		<div key={event.id}>
+			<div
+				className="day__events_event"
+				onClick={() => handleUpdateModal()}
+			>
+				{event.title}
+			</div>
+			{isUpdateModalShow ? (
+				<UpdateModal
+					handleUpdateModal={handleUpdateModal}
+					setEvents={setEvents}
+					events={events}
+					event={{
+						id: event.id,
+						title: event.title,
+						description: event.description,
+						date: event.date,
+						time: event.time,
+						createEventDate: event.createEventDate,
+						updateEventDate: event.updateEventDate || '',
+					}}
+				/>
+			) : null}
+		</div>
+	);
 };
 
 export default Event;

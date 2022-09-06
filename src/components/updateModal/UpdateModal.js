@@ -26,10 +26,6 @@ const UpdateModal = ({ setEvents, events, handleUpdateModal, event }) => {
 		updateEventDate,
 	} = event;
 
-	console.log(event);
-
-	console.log(createEventDate, updateEventDate);
-
 	const [updateDate, setUpdateDate] = useState(date);
 	const [updateTime, setUpdateTime] = useState(time);
 	const [updateTitle, setUpdateTitle] = useState(title);
