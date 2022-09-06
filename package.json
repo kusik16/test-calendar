@@ -2,7 +2,7 @@
     "name": "test-calendar",
     "version": "0.1.0",
     "private": true,
-    "homepage": "https://kusik16.github.io/test-calenar/",
+    "homepage": "https://kusik16.github.io/test-calendar/",
     "dependencies": {
         "@emotion/react": "^11.10.4",
         "@emotion/styled": "^11.10.4",
