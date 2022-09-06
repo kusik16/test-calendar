@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { useState } from "react";
 
 import moment from "moment";
@@ -183,7 +182,3 @@ const UpdateModal = ({ setEvents, events, handleUpdateModal, event }) => {
 };
 
 export default UpdateModal;
-
-// Modal.propTypes = {
-// 	onAddContact: PropTypes.func.isRequired,
-// };

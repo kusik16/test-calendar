@@ -29,6 +29,7 @@ const Calendar = ({ activeDates, onDateSelect }) => {
         if (onDateSelect) {
             onDateSelect(selectDate);
         }
+        // eslint-disable-next-line
     }, []);
 
     return (
