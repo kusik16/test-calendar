@@ -44,7 +44,22 @@ const getDatesInMonthDisplay = (month, year) => {
 		`${prevMonthYear.month}-${prevMonthYear.year}`,
 		'MM-YYYY'
 	).daysInMonth();
-	for (let i = firstWeekday - 1; i >= 0; i--) {
+
+	if (firstWeekday === 0) {
+		for (let i = firstWeekday + 5; i >= 0; i--) {
+			result.push({
+				currentMonth: false,
+				date: getSpecificDate(
+					prevMonthYear.month,
+					prevDaysInMonth - i,
+					prevMonthYear.year
+				),
+				events: [],
+			});
+		}
+	}
+
+	for (let i = firstWeekday - 2; i >= 0; i--) {
 		result.push({
 			currentMonth: false,
 			date: getSpecificDate(
