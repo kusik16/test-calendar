@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/test-calenar/static/css/main.7dc4a357.css",
+    "main.js": "/test-calenar/static/js/main.2093bea4.js",
+    "index.html": "/test-calenar/index.html",
+    "main.7dc4a357.css.map": "/test-calenar/static/css/main.7dc4a357.css.map",
+    "main.2093bea4.js.map": "/test-calenar/static/js/main.2093bea4.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7dc4a357.css",
+    "static/js/main.2093bea4.js"
+  ]
+}
