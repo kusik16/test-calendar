@@ -12,7 +12,7 @@ const Event = ({ setEvents, events, event }) => {
 	};
 
 	return (
-		<div key={event.id}>
+		<>
 			<div
 				className="day__events_event"
 				onClick={() => handleUpdateModal()}
@@ -35,7 +35,7 @@ const Event = ({ setEvents, events, event }) => {
 					}}
 				/>
 			) : null}
-		</div>
+		</>
 	);
 };
 

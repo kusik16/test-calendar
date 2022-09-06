@@ -168,7 +168,6 @@ const UpdateModal = ({ setEvents, events, handleUpdateModal, event }) => {
 					<Button
 						type="submit"
 						sx={{
-							// width: "10%",
 							margin: '15px',
 						}}
 						variant="contained"
