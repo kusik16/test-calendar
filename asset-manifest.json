@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/test-calenar/static/css/main.e342abc7.css",
-    "main.js": "/test-calenar/static/js/main.2093bea4.js",
-    "index.html": "/test-calenar/index.html",
-    "main.e342abc7.css.map": "/test-calenar/static/css/main.e342abc7.css.map",
-    "main.2093bea4.js.map": "/test-calenar/static/js/main.2093bea4.js.map"
+    "main.css": "/test-calendar/static/css/main.e342abc7.css",
+    "main.js": "/test-calendar/static/js/main.2093bea4.js",
+    "index.html": "/test-calendar/index.html",
+    "main.e342abc7.css.map": "/test-calendar/static/css/main.e342abc7.css.map",
+    "main.2093bea4.js.map": "/test-calendar/static/js/main.2093bea4.js.map"
   },
   "entrypoints": [
     "static/css/main.e342abc7.css",
