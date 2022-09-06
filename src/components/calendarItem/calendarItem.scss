@@ -1,0 +1,21 @@
+.day {
+    box-shadow: 2px 0 0 0 rgb(229, 229, 229), 0 2px 0 0 rgb(229, 229, 229),
+        2px 2px 0 0 rgb(229, 229, 229), 2px 0 0 0 rgb(229, 229, 229) inset,
+        0 2px 0 0 rgb(229, 229, 229) inset;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    &__info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+    }
+}
+.date-icon {
+    &[data-active-month="false"] {
+        color: rgba(0, 0, 0, 0.2);
+    }
+    &.today {
+        background-color: rgba(0, 47, 255, 0.342);
+    }
+}

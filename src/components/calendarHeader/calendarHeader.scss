@@ -1,0 +1,19 @@
+.calendar {
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 35px;
+        &_right-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            width: 50%;
+            padding-right: 15px;
+        }
+    }
+}
+
+.choosenDate {
+    width: 120px;
+    text-align: center;
+}
