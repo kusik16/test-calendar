@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { getToday } from '../../utils/moment-utils';
-import { presetDateTracker } from '../../utils/date-utils';
 
 import CalendarHeader from '../calendarHeader/CalendarHeader';
 import CalendarGrid from '../calendarGrid/CalendarGrid';
@@ -9,7 +8,7 @@ import Modal from '../modal/Modal';
 
 import './calendar.scss';
 
-const Calendar = ({ activeDates, onDateSelect }) => {
+const Calendar = ({ onDateSelect }) => {
 	const [events, setEvents] = useState(
 		localStorage.getItem('events')
 			? JSON.parse(localStorage.getItem('events'))
@@ -18,8 +17,6 @@ const Calendar = ({ activeDates, onDateSelect }) => {
 
 	const [selectDate, setSelectDate] = useState(getToday());
 	const [isModalShow, setIsModalShow] = useState(false);
-
-	const presetActiveDates = useRef(presetDateTracker(activeDates || []));
 
 	const handleModal = () => {
 		setIsModalShow(!isModalShow);
@@ -47,7 +44,6 @@ const Calendar = ({ activeDates, onDateSelect }) => {
 				setSelectDate={setSelectDate}
 			/>
 			<CalendarGrid
-				activeDates={presetActiveDates.current}
 				selectDate={selectDate}
 				setSelectDate={setSelectDate}
 				events={events}

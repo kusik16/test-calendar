@@ -16,7 +16,9 @@ const CalendarItem = ({ today, day, events, setEvents }) => {
 				moment(event.date).format('DD') ===
 					moment(day.date).format('DD') &&
 				moment(event.date).format('MM') ===
-					moment(day.date).format('MM')
+					moment(day.date).format('MM') &&
+				moment(event.date).format('YYYY') ===
+					moment(day.date).format('YYYY')
 			) {
 				curDayEvents.push(event);
 			}
@@ -27,7 +29,6 @@ const CalendarItem = ({ today, day, events, setEvents }) => {
 		<div
 			className={`day date-icon ${today}`}
 			data-active-month={day.currentMonth}
-			data-date={day.date.toString()}
 		>
 			<div className="day__info">
 				<div>{getDayOfMonth(day.date)}</div>
