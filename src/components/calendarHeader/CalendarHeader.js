@@ -13,7 +13,6 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 const CalendarHeader = ({ selectDate, setSelectDate, handleModal }) => {
 	const monthSet = getMonthSet(selectDate);
-
 	return (
 		<>
 			<Box

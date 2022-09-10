@@ -11,7 +11,6 @@ import { getToday } from '../../utils/moment-utils';
 
 const Calendar = ({ onDateSelect }) => {
 	const [selectDate, setSelectDate] = useState(getToday());
-
 	const [isModalShow, setIsModalShow] = useState(false);
 
 	const handleModal = () => {
@@ -38,6 +37,7 @@ const Calendar = ({ onDateSelect }) => {
 				/>
 			</>
 		);
+		//eslint-disable-next-line
 	}, [selectDate, setSelectDate]);
 
 	return (
