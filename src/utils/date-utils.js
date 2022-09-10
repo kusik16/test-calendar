@@ -3,6 +3,19 @@ import moment from 'moment';
 const { getSpecificDate, getMonth, getYear } = require('./moment-utils');
 const { totalDatesPerMonthView } = require('../constants/dates');
 
+const generateArrayOfYears = range => {
+	let max = new Date().getFullYear();
+	let min = max - range;
+	const years = [];
+
+	for (let i = max; i >= min; i--) {
+		years.push(i);
+	}
+	return years;
+};
+
+const yearsArray = generateArrayOfYears(100);
+
 const getPrevMonthYear = (month, year) => {
 	if (month === 1) {
 		return {
@@ -119,4 +132,4 @@ const getMonthSet = selectDate => {
 	return result;
 };
 
-export { getDatesInMonthDisplay, getMonthSet };
+export { getDatesInMonthDisplay, getMonthSet, yearsArray };

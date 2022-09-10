@@ -1,74 +1,77 @@
-import React from "react";
+import React from 'react';
+import DataPicker from 'components/dataPicker/DataPicker';
 
-import { getMonth, getYear } from "../../utils/moment-utils";
-import { getMonthSet } from "../../utils/date-utils";
-import { monthsFull } from "../../constants/dates";
+import { getMonth, getYear } from '../../utils/moment-utils';
+import { getMonthSet } from '../../utils/date-utils';
+import { monthsFull } from '../../constants/dates';
 
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-
-import "./calendarHeader.scss";
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 const CalendarHeader = ({ selectDate, setSelectDate, handleModal }) => {
-    const monthSet = getMonthSet(selectDate);
+	const monthSet = getMonthSet(selectDate);
 
-    const hideInput = true;
-
-    return (
-        <div className='calendar__header'>
-            <div className='calendar__header_left-container'>
-                <IconButton
-                    color='primary'
-                    onClick={(e) => handleModal(e)}
-                    size='large'>
-                    <AddCircleIcon fontSize='inherit' />
-                </IconButton>
-            </div>
-            <div className='calendar__header_right-container'>
-                <IconButton
-                    onClick={() => setSelectDate(monthSet.prev)}
-                    size='small'>
-                    <KeyboardArrowLeftIcon fontSize='inherit' />
-                </IconButton>
-                <div className='choosenDate'>
-                    {`${monthsFull[getMonth(monthSet.current)]} ${getYear(
-                        selectDate,
-                    )}`}
-                </div>
-                <IconButton
-                    onClick={() => setSelectDate(monthSet.next)}
-                    size='small'>
-                    <KeyboardArrowRightIcon fontSize='inherit' />
-                </IconButton>
-                <LocalizationProvider dateAdapter={AdapterMoment}>
-                    <DatePicker
-                        views={["month", "year"]}
-                        inputFormat='MM/DD/YYYY'
-                        value={selectDate}
-                        onChange={(newValue) => {
-                            setSelectDate(newValue);
-                        }}
-                        renderInput={
-                            hideInput
-                                ? ({ inputRef, inputProps, InputProps }) => (
-                                      <Box ref={inputRef}>
-                                          {InputProps?.endAdornment}
-                                      </Box>
-                                  )
-                                : (params) => <TextField {...params} />
-                        }
-                    />
-                </LocalizationProvider>
-            </div>
-        </div>
-    );
+	return (
+		<>
+			<Box
+				component="header"
+				sx={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					marginTop: '35px',
+				}}
+			>
+				<Box>
+					<IconButton
+						color="primary"
+						onClick={handleModal}
+						size="large"
+					>
+						<AddBoxIcon fontSize="inherit" />
+					</IconButton>
+				</Box>
+				<Box
+					sx={{
+						display: 'flex',
+						justifyContent: 'flex-end',
+						alignItems: 'center',
+						width: '50%',
+						paddingRight: '15px',
+					}}
+				>
+					<IconButton
+						onClick={() => setSelectDate(monthSet.prev)}
+						size="small"
+					>
+						<KeyboardArrowLeftIcon fontSize="inherit" />
+					</IconButton>
+					<Box
+						sx={{
+							width: '120px',
+							textAlign: 'center',
+						}}
+					>
+						{`${monthsFull[getMonth(monthSet.current)]} ${getYear(
+							selectDate
+						)}`}
+					</Box>
+					<IconButton
+						onClick={() => setSelectDate(monthSet.next)}
+						size="small"
+					>
+						<KeyboardArrowRightIcon fontSize="inherit" />
+					</IconButton>
+					<DataPicker
+						selectDate={selectDate}
+						setSelectDate={setSelectDate}
+					/>
+				</Box>
+			</Box>
+		</>
+	);
 };
 
 export default CalendarHeader;
