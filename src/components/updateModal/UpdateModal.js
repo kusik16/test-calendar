@@ -1,5 +1,5 @@
-import { useState } from 'react';
-
+import { useFormik } from 'formik';
+import { useDispatch } from 'react-redux';
 import moment from 'moment';
 
 import Button from '@mui/material/Button';
@@ -8,14 +8,11 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
-import './updateModal.scss';
+import { eventDelete, eventUpdate } from 'components/event/eventsSlice';
+import validationSchema from 'components/modal/validationSchema';
 
-const UpdateModal = ({ setEvents, events, handleUpdateModal, event }) => {
+const UpdateModal = ({ handleUpdateModal, event }) => {
 	const {
 		date,
 		time,
@@ -26,52 +23,70 @@ const UpdateModal = ({ setEvents, events, handleUpdateModal, event }) => {
 		updateEventDate,
 	} = event;
 
-	const [updateDate, setUpdateDate] = useState(date);
-	const [updateTime, setUpdateTime] = useState(time);
-	const [updateTitle, setUpdateTitle] = useState(title);
-	const [updateDescription, setUpdateDescription] = useState(description);
+	const formik = useFormik({
+		initialValues: {
+			title,
+			description,
+			date,
+			time,
+		},
+		validationSchema,
+		onSubmit: ({ title, description, date, time }) => {
+			onUpdateEvent({
+				title,
+				description,
+				date,
+				time,
+			});
+		},
+	});
 
-	const onUpdateEvent = e => {
-		e.preventDefault();
+	const dispatch = useDispatch();
 
-		const newEvent = {
-			id: id,
-			title: updateTitle || 'no title',
-			description: updateDescription || 'no desctiption',
-			date: updateDate || `Updated at ${moment().format()}`,
-			time: updateTime || moment().format(),
-			updateEventDate: `Updated at ${moment().format(
-				'DD-MM-YYYY HH:mm'
-			)}`,
-		};
+	const onUpdateEvent = obj => {
+		const { title, description, date, time } = obj;
 
-		setEvents([newEvent, ...events.filter(event => event.id !== id)]);
-
-		localStorage.setItem(
-			'events',
-			JSON.stringify([
-				newEvent,
-				...events.filter(event => event.id !== id),
-			])
+		dispatch(
+			eventUpdate({
+				id,
+				changes: {
+					title: title || 'no title',
+					description: description || 'no desctiption',
+					date: date || `Updated at ${moment().format()}`,
+					time: time || moment().format(),
+					updateEventDate: `Updated at ${moment().format(
+						'DD-MM-YYYY HH:mm'
+					)}`,
+				},
+			})
 		);
+
 		handleUpdateModal();
 	};
 
 	const onDeleteEvent = id => {
-		setEvents([...events.filter(event => event.id !== id)]);
-
-		localStorage.setItem(
-			'events',
-			JSON.stringify([...events.filter(event => event.id !== id)])
-		);
+		dispatch(eventDelete(id));
 		handleUpdateModal();
 	};
 
 	return (
-		<div className="overlay">
+		<Box
+			sx={{
+				position: 'fixed',
+				top: 0,
+				left: 0,
+				width: '100vw',
+				height: '100vh',
+				display: 'flex',
+				justifyContent: 'center',
+				alignItems: 'center',
+				backgroundColor: 'rgba(0, 0, 0, 0.8)',
+				zIndex: 1200,
+				cursor: 'auto',
+			}}
+		>
 			<Box
-				className="modal"
-				onSubmit={e => onUpdateEvent(e)}
+				onSubmit={formik.handleSubmit}
 				component="form"
 				sx={{
 					width: '100%',
@@ -79,36 +94,59 @@ const UpdateModal = ({ setEvents, events, handleUpdateModal, event }) => {
 					margin: '0 auto',
 					borderRadius: '5px',
 					marginBottom: '25px',
+					maxHeight: 'calc(100vh - 24px)',
+					backgroundColor: '#fff',
+					padding: '15px',
 				}}
 				noValidate
 				autoComplete="off"
 			>
-				<div className="modal__header">
-					<div>
-						<div className="modal__header_title">
+				<Box
+					sx={{
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'space-between',
+						marginBottom: '15px',
+					}}
+				>
+					<Box>
+						<Box
+							sx={{
+								fontSize: '25px',
+							}}
+						>
 							Edit idea item
-						</div>
-						<div className="modal__header_subtitle">
+						</Box>
+						<Box
+							sx={{
+								fontSize: '15px',
+								opacity: '0.5',
+							}}
+						>
 							{updateEventDate || createEventDate}
-						</div>
-					</div>
+						</Box>
+					</Box>
 					<IconButton
 						onClick={() => handleUpdateModal()}
 						size="large"
 					>
 						<CloseIcon fontSize="inherit" />
 					</IconButton>
-				</div>
+				</Box>
 				<TextField
 					sx={{
 						width: '100%',
 						marginBottom: '15px',
 					}}
-					id="name"
+					id="title"
+					name="title"
+					autoComplete="title"
 					label="Title"
 					variant="standard"
-					value={updateTitle}
-					onChange={e => setUpdateTitle(e.target.value)}
+					value={formik.values.title}
+					onChange={formik.handleChange}
+					error={Boolean(formik.errors.title)}
+					helperText={formik.errors.title}
 				/>
 				<TextField
 					sx={{
@@ -117,55 +155,66 @@ const UpdateModal = ({ setEvents, events, handleUpdateModal, event }) => {
 					}}
 					multiline
 					rows={4}
-					id="name"
+					id="description"
+					name="description"
 					label="Description"
 					variant="standard"
-					value={updateDescription}
-					onChange={e => setUpdateDescription(e.target.value)}
+					value={formik.values.description}
+					onChange={formik.handleChange}
 				/>
-				<div className="modal__dates">
-					<LocalizationProvider dateAdapter={AdapterMoment}>
-						<DesktopDatePicker
-							label="Date desktop"
-							inputFormat="DD/MM/YYYY"
-							value={updateDate}
-							onChange={newValue => {
-								setUpdateDate(newValue);
-							}}
-							renderInput={params => (
-								<TextField variant="standard" {...params} />
-							)}
-						/>
-						<TimePicker
-							label="Time"
-							inputFormat="HH:mm"
-							value={updateTime}
-							onChange={newValue => {
-								setUpdateTime(newValue);
-							}}
-							renderInput={params => (
-								<TextField
-									variant="standard"
-									sx={{
-										width: '30%',
-									}}
-									{...params}
-								/>
-							)}
-						/>
-					</LocalizationProvider>
-				</div>
-				<div className="modal__buttons">
+				<Box
+					sx={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						marginTop: '25px',
+						marginBottom: '25px',
+					}}
+				>
+					<TextField
+						type="date"
+						id="date"
+						name="date"
+						variant="standard"
+						value={formik.values.date}
+						onChange={formik.handleChange}
+						error={Boolean(formik.errors.date)}
+						helperText={formik.errors.date}
+					/>
+					<TextField
+						type="time"
+						id="time"
+						name="time"
+						variant="standard"
+						value={formik.values.time}
+						onChange={formik.handleChange}
+						error={Boolean(formik.errors.time)}
+						helperText={formik.errors.time}
+					/>
+				</Box>
+				<Box
+					sx={{
+						display: 'flex',
+						justifyContent: 'flex-end',
+						alignItems: 'center',
+					}}
+				>
 					<IconButton
 						onClick={() => onDeleteEvent(id)}
-						sx={{}}
 						color="error"
 						aria-label="delete"
 						size="large"
 					>
-						<DeleteIcon fontSize="inherit" />
+						<DeleteIcon
+							sx={{
+								margin: 0,
+								textAlign: 'center',
+								width: '20px',
+							}}
+							fontSize="inherit"
+						/>
 					</IconButton>
 					<Button
+						disabled={!(formik.isValid && formik.dirty)}
 						type="submit"
 						sx={{
 							margin: '15px',
@@ -174,9 +223,9 @@ const UpdateModal = ({ setEvents, events, handleUpdateModal, event }) => {
 					>
 						Save
 					</Button>
-				</div>
+				</Box>
 			</Box>
-		</div>
+		</Box>
 	);
 };
 

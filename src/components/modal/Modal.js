@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useFormik } from 'formik';
+
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 
@@ -7,43 +10,67 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
-import './modal.scss';
+import { eventCreate } from '../event/eventsSlice';
+import validationSchema from './validationSchema';
 
-const Modal = ({ setEvents, events, handleModal }) => {
-	const [date, setDate] = useState(null);
-	const [time, setTime] = useState(null);
-	const [title, setTitle] = useState('');
-	const [description, setDescription] = useState('');
+const Modal = ({ handleModal }) => {
+	const formik = useFormik({
+		initialValues: {
+			title: '',
+			description: '',
+			date: '',
+			time: '',
+		},
+		validationSchema,
+		onSubmit: ({ title, description, date, time }) => {
+			onCreateEvent({
+				title,
+				description,
+				date,
+				time,
+			});
+		},
+	});
 
-	const onCreateEvent = e => {
-		e.preventDefault();
+	const dispatch = useDispatch();
+
+	const onCreateEvent = obj => {
+		const { title, description, date, time } = obj;
 
 		const newEvent = {
 			title: title || 'no title',
 			description: description || 'no desctiption',
-			date: date || moment().format(),
-			time: time || moment().format(),
+			date: date || new Date().toISOString(),
+			time: time || moment().format('hh:mm'),
 			createEventDate: `Created at ${moment().format(
 				'DD-MM-YYYY HH:mm'
 			)}`,
 			id: uuidv4(),
 		};
 
-		setEvents([newEvent, ...events]);
-		localStorage.setItem('events', JSON.stringify([newEvent, ...events]));
+		dispatch(eventCreate(newEvent));
 		handleModal();
 	};
 
 	return (
-		<div className="overlay">
+		<Box
+			sx={{
+				position: 'fixed',
+				top: 0,
+				left: 0,
+				width: '100vw',
+				height: '100vh',
+				display: 'flex',
+				justifyContent: 'center',
+				alignItems: 'center',
+				backgroundColor: 'rgba(0, 0, 0, 0.8)',
+				zIndex: 1200,
+				cursor: 'auto',
+			}}
+		>
 			<Box
-				className="modal"
-				onSubmit={e => onCreateEvent(e)}
+				onSubmit={formik.handleSubmit}
 				component="form"
 				sx={{
 					width: '100%',
@@ -51,26 +78,45 @@ const Modal = ({ setEvents, events, handleModal }) => {
 					margin: '0 auto',
 					borderRadius: '5px',
 					marginBottom: '25px',
+					maxHeight: 'calc(100vh - 24px)',
+					backgroundColor: '#fff',
+					padding: '15px',
 				}}
 				noValidate
 				autoComplete="off"
 			>
-				<div className="modal__header">
-					<div className="modal__header_title">Add new idea item</div>
-					<IconButton onClick={() => handleModal()} size="large">
+				<Box
+					sx={{
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'space-between',
+					}}
+				>
+					<Box
+						sx={{
+							fontSize: '25px',
+						}}
+					>
+						Add new idea item
+					</Box>
+					<IconButton onClick={handleModal} size="large">
 						<CloseIcon fontSize="inherit" />
 					</IconButton>
-				</div>
+				</Box>
 				<TextField
 					sx={{
 						width: '100%',
 						marginBottom: '15px',
 					}}
-					id="name"
+					id="title"
+					name="title"
+					autoComplete="title"
 					label="Title"
 					variant="standard"
-					value={title}
-					onChange={e => setTitle(e.target.value)}
+					value={formik.values.title}
+					onChange={formik.handleChange}
+					error={Boolean(formik.errors.title)}
+					helperText={formik.errors.title}
 				/>
 				<TextField
 					sx={{
@@ -78,53 +124,52 @@ const Modal = ({ setEvents, events, handleModal }) => {
 					}}
 					multiline
 					rows={4}
-					id="name"
+					id="description"
+					name="description"
 					label="Description"
 					variant="standard"
-					value={description}
-					onChange={e => setDescription(e.target.value)}
+					value={formik.values.description}
+					onChange={formik.handleChange}
 				/>
-				<div className="modal__dates">
-					<LocalizationProvider dateAdapter={AdapterMoment}>
-						<DesktopDatePicker
-							label="Date"
-							inputFormat="DD/MM/YYYY"
-							value={date}
-							onChange={newValue => {
-								setDate(newValue);
-							}}
-							renderInput={params => (
-								<TextField
-									variant="standard"
-									sx={{
-										backgroundColor: '#fff',
-									}}
-									{...params}
-								/>
-							)}
-						/>
-						<TimePicker
-							label="Begin time"
-							inputFormat="HH:mm"
-							value={time}
-							onChange={newValue => {
-								setTime(newValue);
-							}}
-							renderInput={params => (
-								<TextField
-									variant="standard"
-									sx={{
-										width: '30%',
-										backgroundColor: '#fff',
-									}}
-									{...params}
-								/>
-							)}
-						/>
-					</LocalizationProvider>
-				</div>
-				<div className="modal__buttons">
+
+				<Box
+					sx={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						marginTop: '25px',
+						marginBottom: '25px',
+					}}
+				>
+					<TextField
+						inputformat="DD/MM/YYYY"
+						type="date"
+						id="date"
+						name="date"
+						variant="standard"
+						value={formik.values.date}
+						onChange={formik.handleChange}
+						error={Boolean(formik.errors.date)}
+						helperText={formik.errors.date}
+					/>
+					<TextField
+						type="time"
+						id="time"
+						name="time"
+						variant="standard"
+						value={formik.values.time}
+						onChange={formik.handleChange}
+						error={Boolean(formik.errors.time)}
+						helperText={formik.errors.time}
+					/>
+				</Box>
+				<Box
+					sx={{
+						display: 'flex',
+						justifyContent: 'flex-end',
+					}}
+				>
 					<Button
+						disabled={!(formik.isValid && formik.dirty)}
 						type="submit"
 						sx={{
 							margin: '15px',
@@ -134,9 +179,9 @@ const Modal = ({ setEvents, events, handleModal }) => {
 					>
 						Save
 					</Button>
-				</div>
+				</Box>
 			</Box>
-		</div>
+		</Box>
 	);
 };
 
