@@ -13,6 +13,7 @@ const monthsFull = [
 	'December',
 ];
 
+
 const totalDatesPerMonthView = 42; // 6 rows, 7 days a week...
 
 export { totalDatesPerMonthView, monthsFull };

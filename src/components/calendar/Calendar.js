@@ -1,21 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
-import { getToday } from '../../utils/moment-utils';
+import Box from '@mui/material/Box';
 
 import CalendarHeader from '../calendarHeader/CalendarHeader';
 import CalendarGrid from '../calendarGrid/CalendarGrid';
 import Modal from '../modal/Modal';
+import CalendarContent from 'components/calendarContent/CalendarContent';
 
-import './calendar.scss';
+import { getToday } from '../../utils/moment-utils';
 
 const Calendar = ({ onDateSelect }) => {
-	const [events, setEvents] = useState(
-		localStorage.getItem('events')
-			? JSON.parse(localStorage.getItem('events'))
-			: []
-	);
-
 	const [selectDate, setSelectDate] = useState(getToday());
+
 	const [isModalShow, setIsModalShow] = useState(false);
 
 	const handleModal = () => {
@@ -26,30 +22,35 @@ const Calendar = ({ onDateSelect }) => {
 		if (onDateSelect) {
 			onDateSelect(selectDate);
 		}
-		// eslint-disable-next-line
-	}, []);
+	}, [selectDate, onDateSelect]);
+
+	const renderContent = useMemo(() => {
+		return (
+			<>
+				<CalendarHeader
+					selectDate={selectDate}
+					setSelectDate={setSelectDate}
+					handleModal={handleModal}
+				/>
+				<CalendarGrid
+					selectDate={selectDate}
+					setSelectDate={setSelectDate}
+				/>
+			</>
+		);
+	}, [selectDate, setSelectDate]);
 
 	return (
-		<div className="calendar">
-			{isModalShow ? (
-				<Modal
-					handleModal={handleModal}
-					setEvents={setEvents}
-					events={events}
-				/>
-			) : null}
-			<CalendarHeader
-				handleModal={handleModal}
-				selectDate={selectDate}
-				setSelectDate={setSelectDate}
-			/>
-			<CalendarGrid
-				selectDate={selectDate}
-				setSelectDate={setSelectDate}
-				events={events}
-				setEvents={setEvents}
-			/>
-		</div>
+		<Box
+			component="main"
+			sx={{
+				display: 'flex',
+				flexDirection: 'column',
+			}}
+		>
+			{isModalShow ? <Modal handleModal={handleModal} /> : null}
+			<CalendarContent renderContent={renderContent} />
+		</Box>
 	);
 };
 
